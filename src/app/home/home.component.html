@@ -1,0 +1,21 @@
+<div class="card-container">
+	<h1 x-large class="sample-content">Adal-ts consumer</h1>
+
+
+	<hr>
+
+
+	<div>
+		<h4>Adal-ts consumer</h4>
+
+		<button [disabled]="disableLogin" (click)="login();">Login</button>
+		<button (click)="getUser()">getUser</button>
+		<button [disabled]="disableLogout"  (click)="logout()">logout</button> 
+		
+		<hr>		
+		<div>
+		{{ user |json }}
+		</div>	 
+	</div>
+
+</div>
