@@ -127,10 +127,15 @@ return /******/ (function(modules) { // webpackBootstrap
 	    };
 	    AuthenticationContext.prototype.getUser = function () {
 	        var idtoken = this.storage.getItem(constants_1.Constants.STORAGE.IDTOKEN);
-	        if (idtoken === '')
+	        try {
+	            var user = this.userDecoder.decode(idtoken);
+	            return user;
+	        }
+	        catch (error) {
+	            if (console && console.debug)
+	                console.debug('getUser() returns null on catched error. Details >> ' + error.toString());
 	            return null;
-	        var user = this.userDecoder.decode(idtoken);
-	        return user;
+	        }
 	    };
 	    AuthenticationContext.prototype.logout = function () {
 	        var idtoken = this.storage.getItem(constants_1.Constants.STORAGE.IDTOKEN);
@@ -375,15 +380,10 @@ return /******/ (function(modules) { // webpackBootstrap
 	var UserDecoder = (function () {
 	    function UserDecoder() {
 	        this.decodeJwt = function (jwtToken) {
-	            if (this.isEmpty(jwtToken)) {
-	                return null;
-	            }
-	            ;
 	            var idTokenPartsRegex = /^([^\.\s]*)\.([^\.\s]+)\.([^\.\s]*)$/;
 	            var matches = idTokenPartsRegex.exec(jwtToken);
 	            if (!matches || matches.length < 4) {
-	                this.warn('The returned id_token is not parseable.');
-	                return null;
+	                throw new Error("Failed to decode Jwt token. The token has in valid format. Actual token: '" + jwtToken + "'");
 	            }
 	            var crackedToken = {
 	                header: matches[1],
